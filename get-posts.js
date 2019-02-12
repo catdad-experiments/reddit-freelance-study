@@ -3,6 +3,7 @@ const { json } = require('./fetch.js');
 
 const seconds = (milliseconds) => Math.round(milliseconds / 1000);
 
+// https://www.reddit.com/r/redditdev/comments/8dkf0o/is_there_a_way_to_download_all_posts_from_a/
 const pushshift = ({
   subreddit,
   from,
