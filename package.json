@@ -21,19 +21,16 @@
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "cross-env": "^5.2.0",
-    "eslint": "^5.13.0",
-    "multispawn": "^1.0.0"
+    "eslint": "^5.13.0"
   },
   "dependencies": {
     "env-cmd": "^8.0.2",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "fs-extra": "^7.0.1",
-    "localtunnel": "^1.9.1",
     "node-fetch": "^2.3.0",
     "passport": "^0.4.0",
     "passport-reddit": "^0.2.4",
-    "reddit-wrapper-v2": "^1.1.5",
-    "smee-client": "^1.0.2"
+    "reddit-wrapper-v2": "^1.1.5"
   }
 }
