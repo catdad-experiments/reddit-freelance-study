@@ -1,9 +1,12 @@
-const port = process.env.PORT;
+const fs = require('fs');
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const RedditStrategy = require('passport-reddit').Strategy;
 const app = express();
+const port = process.env.PORT;
+
+const { subreddit } = require('yargs-parser')(process.argv.slice(2));
 
 const getPosts = require('./get-posts.js');
 
@@ -34,7 +37,7 @@ passport.use(new RedditStrategy({
   console.log('profile name:', profile.name);
   console.log('----------------------------------------------');
 
-  getPosts(accessToken);
+  getPosts(accessToken, subreddit);
 
   done(null, {
     accessToken,
@@ -53,9 +56,7 @@ passport.deserializeUser(function(user, done) {
 });
 
 app.get('/', (req, res) => {
-  res.end(`
-    <a href="/auth/reddit">login with reddit</a>
-  `);
+  fs.createReadStream('./index.html').pipe(res);
 });
 
 app.get('/auth/reddit', (req, res, next) => {

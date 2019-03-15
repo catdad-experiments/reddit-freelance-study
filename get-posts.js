@@ -19,28 +19,32 @@ const pushshift = ({
 
 const reddit = (parts) => `https://api/reddit.com${parts}`;
 
-const getPosts = async (accessToken, fromMilli = Date.now()) => {
+const getPosts = async (accessToken, subreddit, fromMilli = Date.now()) => {
   const day = (1000 * 60 * 60 * 24);
   const to = seconds(fromMilli);
   const from = seconds(fromMilli - (day * 30));
 
   const res = await json(pushshift({
-    subreddit: 'freelance',
+    subreddit,
     from, to
   }));
 
-  await fs.outputFile(`./output/subreddit-freelance-${from}.json`, JSON.stringify(res, null, 2));
+  if (res.data.length === 0) {
+    return;
+  }
+
+  await fs.outputFile(`./output/${subreddit}/posts-${from}.json`, JSON.stringify(res, null, 2));
 
   const lastTime = res.data.slice(-1)[0].created_utc * 1000;
 
   console.log(`last time`, lastTime);
   console.log(`got ${res.data.length} posts until ${new Date(lastTime).toISOString()}`);
 
-  return await getPosts(accessToken, lastTime);
+  return await getPosts(accessToken, subreddit, lastTime);
 };
 
-module.exports = (accessToken) => {
-  getPosts(accessToken).then(() => {
+module.exports = (accessToken, subreddit) => {
+  getPosts(accessToken, subreddit).then(() => {
     console.log('done!');
   }).catch(err => {
     console.log('done with error', err);
