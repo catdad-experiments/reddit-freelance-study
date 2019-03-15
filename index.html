@@ -19,12 +19,21 @@
       getPosts.style.display = 'none';
     }
 
-    getPosts.onclick = () => {
-      fetch('/api/get-posts', { method: 'POST' }).then(res => {
+    const fetchText = (url, opts) => {
+      return fetch(url, opts).then(res => {
         return res.text().then(text => {
-          return { ok: res.ok, text };
+          return {
+            ok: res.ok,
+            statusCode: res.statusCode,
+            statusMessage: res.statusMessage,
+            text
+          };
         });
-      }).then(res => {
+      });
+    };
+
+    getPosts.onclick = () => {
+      fetchText('/api/get-posts', { method: 'POST' }).then(res => {
         if (!res.ok) {
           return Promise.reject(new Error(res.text));
         }
