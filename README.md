@@ -12,3 +12,12 @@ npx cross-env PORT=8000 npm run exec -- node server.js
 7. Click "login with reddit" to authorize the app and get a token
 8. Enter the name of the subreddit in the box and click "get posts"
 9. When that is done, click "breakout posts"
+
+
+_Note: before I gotget this:_
+
+```bash
+curl -H 'Authorization: 357...' -H 'User-Agent: web:test-app-web:v1.0.0' https://api.reddit.com/comments/a8svie | json echo --pretty > out.json
+```
+
+This returns the post (type `t3`) as well as replies (type `t1`)... not sure if batching works on this route
