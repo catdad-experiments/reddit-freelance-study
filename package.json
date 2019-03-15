@@ -24,10 +24,12 @@
     "eslint": "^5.13.0"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.4",
     "env-cmd": "^8.0.2",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "fs-extra": "^7.0.1",
+    "lodash": "^4.17.11",
     "node-fetch": "^2.3.0",
     "passport": "^0.4.0",
     "passport-reddit": "^0.2.4",

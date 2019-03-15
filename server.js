@@ -1,8 +1,10 @@
-const fs = require('fs');
+const fs = require('fs-extra');
+const lodash = require('lodash');
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const RedditStrategy = require('passport-reddit').Strategy;
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = process.env.PORT;
 
@@ -20,9 +22,10 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cookieParser());
 
 app.use('*', (req, res, next) => {
-  console.log(req.method, req.originalUrl, req.headers, req.session);
+  console.log(req.method, req.originalUrl);
   next();
 });
 
@@ -37,7 +40,6 @@ passport.use(new RedditStrategy({
   console.log('profile name:', profile.name);
   console.log('----------------------------------------------');
 
-  getPosts(accessToken, subreddit);
 
   done(null, {
     accessToken,
@@ -55,8 +57,23 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-app.get('/', (req, res) => {
-  fs.createReadStream('./index.html').pipe(res);
+app.get('/', async (req, res) => {
+  const accessToken = req.cookies.accessToken || '';
+  const index = await fs.readFile('./index.html');
+  const response = lodash.template(index)({ accessToken });
+
+  res.end(response);
+});
+
+app.get('/api/get-posts', (req, res) => {
+  const accessToken = req.cookies.accessToken || '';
+
+  getPosts({ accessToken, subreddit }).then(() => {
+    res.end('all done');
+  }).catch(err => {
+    res.writeHead(500);
+    res.end(err.toString());
+  });
 });
 
 app.get('/auth/reddit', (req, res, next) => {
@@ -69,6 +86,10 @@ app.get('/auth/reddit', (req, res, next) => {
 });
 app.get('/auth/reddit/callback', passport.authenticate('reddit', { failureRedirect: '/login' }), (req, res) => {
   console.log('callback request', req.user);
+
+  res.cookie('accessToken', req.user.accessToken, { maxAge: 900000, httpOnly: true });
+  res.cookie('name', req.user.name, { maxAge: 900000, httpOnly: true });
+
   res.redirect('/');
 });
 

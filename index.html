@@ -5,7 +5,35 @@
   <title>Document</title>
 </head>
 <body>
-  <a href="/auth/reddit">login with reddit</a>
+  <a id="login" href="/auth/reddit">login with reddit</a>
+  <button id="get-posts">get posts</button>
 
+  <script>
+    const accessToken = '{{accessToken}}';
+    const login = document.querySelector('#login');
+    const getPosts = document.querySelector('#get-posts');
+
+    if (accessToken) {
+      login.style.display = 'none';
+    } else {
+      getPosts.style.display = 'none';
+    }
+
+    getPosts.onclick = () => {
+      fetch('/api/get-posts').then(res => {
+        return res.text().then(text => {
+          return { ok: res.ok, text };
+        });
+      }).then(res => {
+        if (!res.ok) {
+          return Promise.reject(new Error(res.text));
+        }
+
+        alert(res.text);
+      }).catch(err => {
+        console.error(err);
+      });
+    };
+  </script>
 </body>
 </html>
