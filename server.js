@@ -8,8 +8,6 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const port = process.env.PORT;
 
-const { subreddit } = require('yargs-parser')(process.argv.slice(2));
-
 const getPosts = require('./lib/get-posts.js');
 
 const { APP_ID, APP_SECRET } = process.env;
@@ -65,8 +63,9 @@ app.get('/', async (req, res) => {
   res.end(response);
 });
 
-app.post('/api/get-posts', (req, res) => {
+app.post('/api/get-posts/:subreddit', (req, res) => {
   const accessToken = req.cookies.accessToken || '';
+  const { subreddit } = req.params;
 
   getPosts({ accessToken, subreddit }).then(() => {
     res.end('all done');

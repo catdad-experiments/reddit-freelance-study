@@ -6,17 +6,22 @@
 </head>
 <body>
   <a id="login" href="/auth/reddit">login with reddit</a>
-  <button id="get-posts">get posts</button>
+  <div id="controls">
+    <p>Subreddit: <input type="text" id="subreddit"></p>
+    <button id="get-posts">get posts</button>
+  </div>
 
   <script>
     const accessToken = '{{accessToken}}';
     const login = document.querySelector('#login');
+    const controls = document.querySelector('#controls');
     const getPosts = document.querySelector('#get-posts');
+    const subreddit = document.querySelector('#subreddit');
 
     if (accessToken) {
       login.style.display = 'none';
     } else {
-      getPosts.style.display = 'none';
+      controls.style.display = 'none';
     }
 
     const fetchText = (url, opts) => {
@@ -33,7 +38,7 @@
     };
 
     getPosts.onclick = () => {
-      fetchText('/api/get-posts', { method: 'POST' }).then(res => {
+      fetchText('/api/get-posts/' + subreddit.value, { method: 'POST' }).then(res => {
         if (!res.ok) {
           return Promise.reject(new Error(res.text));
         }
