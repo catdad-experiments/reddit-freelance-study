@@ -8,7 +8,7 @@ const port = process.env.PORT;
 
 const { subreddit } = require('yargs-parser')(process.argv.slice(2));
 
-const getPosts = require('./get-posts.js');
+const getPosts = require('./lib/get-posts.js');
 
 const { APP_ID, APP_SECRET } = process.env;
 
