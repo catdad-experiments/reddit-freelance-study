@@ -10,6 +10,7 @@ const port = process.env.PORT;
 
 const getPosts = require('./lib/get-posts.js');
 const breakoutPosts = require('./lib/breakout-posts.js');
+const updatePosts = require('./lib/update-posts.js');
 
 const { APP_ID, APP_SECRET } = process.env;
 
@@ -39,7 +40,6 @@ passport.use(new RedditStrategy({
   console.log('profile name:', profile.name);
   console.log('----------------------------------------------');
 
-
   done(null, {
     accessToken,
     refreshToken,
@@ -56,30 +56,38 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
-app.get('/', async (req, res) => {
-  const accessToken = req.cookies.accessToken || '';
-  const index = await fs.readFile('./index.html');
-  const response = lodash.template(index)({ accessToken });
+app.get('/', (req, res) => {
+  console.log('??????????');
+  (async () => {
+    const accessToken = req.cookies.accessToken || '';
+    const index = await fs.readFile('./index.html');
+    lodash.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+    return lodash.template(index)({ accessToken });
+  })().then(response => res.end(response)).catch(err => {
+    console.error(err);
 
-  res.end(response);
-});
-
-app.post('/api/get-posts/:subreddit', (req, res) => {
-  const accessToken = req.cookies.accessToken || '';
-  const { subreddit } = req.params;
-
-  getPosts({ accessToken, subreddit }).then(() => {
-    res.end('all done');
-  }).catch(err => {
     res.writeHead(500);
     res.end(err.toString());
   });
 });
-app.post('/api/breakout-posts/:subreddit', (req, res) => {
-  const accessToken = req.cookies.accessToken || '';
-  const { subreddit } = req.params;
 
-  breakoutPosts({ accessToken, subreddit }).then(() => {
+app.post('/api/:action/:subreddit', (req, res) => {
+  const accessToken = req.cookies.accessToken || '';
+  const actions = {
+    'get-posts': getPosts,
+    'breakout-posts': breakoutPosts,
+    'update-posts': updatePosts
+  };
+
+  const { action, subreddit } = req.params;
+
+  if (!actions[action]) {
+    res.writeHead(404);
+    res.end();
+    return;
+  }
+
+  actions[action]({ accessToken, subreddit }).then(() => {
     res.end('all done');
   }).catch(err => {
     res.writeHead(500);
