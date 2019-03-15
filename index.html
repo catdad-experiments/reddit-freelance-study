@@ -20,7 +20,7 @@
     }
 
     getPosts.onclick = () => {
-      fetch('/api/get-posts').then(res => {
+      fetch('/api/get-posts', { method: 'POST' }).then(res => {
         return res.text().then(text => {
           return { ok: res.ok, text };
         });

@@ -65,7 +65,7 @@ app.get('/', async (req, res) => {
   res.end(response);
 });
 
-app.get('/api/get-posts', (req, res) => {
+app.post('/api/get-posts', (req, res) => {
   const accessToken = req.cookies.accessToken || '';
 
   getPosts({ accessToken, subreddit }).then(() => {
