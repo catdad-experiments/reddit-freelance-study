@@ -31,6 +31,7 @@
     "fs-extra": "^7.0.1",
     "lodash": "^4.17.11",
     "node-fetch": "^2.3.0",
+    "node-stream": "^1.7.0",
     "passport": "^0.4.0",
     "passport-reddit": "^0.2.4",
     "reddit-wrapper-v2": "^1.1.5",
