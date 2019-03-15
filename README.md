@@ -17,7 +17,7 @@ npx cross-env PORT=8000 npm run exec -- node server.js
 _Note: before I gotget this:_
 
 ```bash
-curl -H 'Authorization: 357...' -H 'User-Agent: web:test-app-web:v1.0.0' https://api.reddit.com/comments/a8svie | json echo --pretty > out.json
+curl -H 'Authorization: <access token>' -H 'User-Agent: web:test-app-web:v1.0.0' https://api.reddit.com/comments/a8svie | json echo --pretty > out.json
 ```
 
 This returns the post (type `t3`) as well as replies (type `t1`)... not sure if batching works on this route
