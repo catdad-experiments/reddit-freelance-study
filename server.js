@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT;
 
 const getPosts = require('./lib/get-posts.js');
+const breakoutPosts = require('./lib/breakout-posts.js');
 
 const { APP_ID, APP_SECRET } = process.env;
 
@@ -68,6 +69,17 @@ app.post('/api/get-posts/:subreddit', (req, res) => {
   const { subreddit } = req.params;
 
   getPosts({ accessToken, subreddit }).then(() => {
+    res.end('all done');
+  }).catch(err => {
+    res.writeHead(500);
+    res.end(err.toString());
+  });
+});
+app.post('/api/breakout-posts/:subreddit', (req, res) => {
+  const accessToken = req.cookies.accessToken || '';
+  const { subreddit } = req.params;
+
+  breakoutPosts({ accessToken, subreddit }).then(() => {
     res.end('all done');
   }).catch(err => {
     res.writeHead(500);

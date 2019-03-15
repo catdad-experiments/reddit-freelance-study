@@ -9,6 +9,7 @@
   <div id="controls">
     <p>Subreddit: <input type="text" id="subreddit"></p>
     <button id="get-posts">get posts</button>
+    <button id="breakout-posts">breakout posts</button>
   </div>
 
   <script>
@@ -16,6 +17,7 @@
     const login = document.querySelector('#login');
     const controls = document.querySelector('#controls');
     const getPosts = document.querySelector('#get-posts');
+    const breakoutPosts = document.querySelector('#breakout-posts');
     const subreddit = document.querySelector('#subreddit');
 
     if (accessToken) {
@@ -39,6 +41,18 @@
 
     getPosts.onclick = () => {
       fetchText('/api/get-posts/' + subreddit.value, { method: 'POST' }).then(res => {
+        if (!res.ok) {
+          return Promise.reject(new Error(res.text));
+        }
+
+        alert(res.text);
+      }).catch(err => {
+        console.error(err);
+      });
+    };
+
+    breakoutPosts.onclick = () => {
+      fetchText('/api/breakout-posts/' + subreddit.value, { method: 'POST' }).then(res => {
         if (!res.ok) {
           return Promise.reject(new Error(res.text));
         }
